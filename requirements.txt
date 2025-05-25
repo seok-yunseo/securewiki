@@ -63,7 +63,7 @@ trl==0.17.0
 typing_extensions==4.13.1
 tzdata==2024.1
 urllib3==2.3.0
-volatility3 @ file:///C:/Users/ysseo/volatility3
+# volatility3 @ file:///C:/Users/ysseo/volatility3
 Werkzeug==3.0.4
 xxhash==3.5.0
 yarl==1.19.0
