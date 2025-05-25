@@ -128,5 +128,8 @@ def api_edit_term(title):
     return jsonify({"message": "updated"}), 200
 
 # ✅ 서버 실행
-if __name__ == '__main__':
+import os
+
+if __name__ == '__main__' and not os.environ.get("RENDER"):
     app.run(debug=True)
+
