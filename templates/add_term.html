@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>용어 추가</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo" onclick="location.href='/'">🔐 보안위키</div>
+  </header>
+
+  <main style="padding: 30px;">
+    <h1>➕ 보안 용어 추가</h1>
+    <form id="addForm">
+      <label for="title">용어 제목</label><br>
+      <input type="text" id="title" required><br><br>
+
+      <label for="category">카테고리</label><br>
+      <select id="category" required>
+        <option value="web">웹</option>
+        <option value="network">네트워크</option>
+        <option value="system">시스템</option>
+        <option value="기타">기타</option>
+      </select><br><br>
+
+      <label for="content">설명</label><br>
+      <textarea id="content" rows="5" required></textarea><br><br>
+
+      <label for="author">작성자</label><br>
+      <input type="text" id="author" required><br><br>
+
+      <button type="submit">✅ 추가</button>
+    </form>
+  </main>
+
+  <script>
+    document.getElementById("addForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const term = {
+        title: document.getElementById("title").value.trim(),
+        category: document.getElementById("category").value.trim(),
+        content: document.getElementById("content").value.trim(),
+        author: document.getElementById("author").value.trim()
+      };
+
+      fetch("/api/terms", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(term)
+      })
+      .then(res => {
+        if (res.ok) {
+          alert("✔ 용어가 성공적으로 추가되었습니다!");
+          location.href = "/";
+        } else {
+          alert("❌ 용어 추가에 실패했습니다.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

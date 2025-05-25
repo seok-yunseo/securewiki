@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>보안 위키</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo" onclick="location.href='/'">🔐 보안위키</div>
+    <div class="search-box">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="보안 용어 검색..."
+        onkeydown="handleKey(event)">
+    </div>
+    <div class="add-button">
+      <a href="/add">➕ 용어 추가</a>
+    </div>
+  </header>
+
+  <div id="main-container">
+    <nav id="category">
+      <h3>카테고리</h3>
+      <ul id="categoryList">
+        <!-- 카테고리 동적 생성 -->
+      </ul>
+      <h4>추천 용어</h4>
+      <ul id="recommendedList">
+        <!-- 추천 용어 동적 생성 -->
+      </ul>
+    </nav>
+
+    <section id="content">
+      <h1>보안 위키에 오신 것을 환영합니다</h1>
+      <p>왼쪽 카테고리 또는 추천 용어를 클릭해보세요.</p>
+    </section>
+  </div>
+
+  <script>
+    function handleKey(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchTerm();
+      }
+    }
+
+    function searchTerm() {
+      const keyword = document.getElementById("searchInput").value.toLowerCase();
+      fetch("/api/terms")
+        .then(res => res.json())
+        .then(data => {
+          const match = data.find(term => term.title.toLowerCase().includes(keyword));
+          if (match) {
+            location.href = `/term/${match.title}`;
+          } else {
+            alert("❌ 해당 용어를 찾을 수 없습니다.");
+          }
+        });
+    }
+
+    function updateCategoryMenu() {
+      fetch("/api/terms")
+        .then(res => res.json())
+        .then(terms => {
+          const categories = new Set(["web", "network", "system"]);
+          terms.forEach(term => categories.add(term.category));
+          const list = document.getElementById("categoryList");
+          list.innerHTML = "";
+          categories.forEach(cat => {
+            const li = document.createElement("li");
+            li.textContent = (cat === "기타") ? "기타" : `${cat.charAt(0).toUpperCase() + cat.slice(1)} 보안`;
+            li.onclick = () => filterCategory(cat, terms);
+            list.appendChild(li);
+          });
+        });
+    }
+
+    function updateRecommendedTerms() {
+      fetch("/api/terms")
+        .then(res => res.json())
+        .then(terms => {
+          const list = document.getElementById("recommendedList");
+          list.innerHTML = "";
+          terms.slice(0, 5).forEach(term => {
+            const li = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = `/term/${term.title}`;
+            link.textContent = term.title;
+            li.appendChild(link);
+            list.appendChild(li);
+          });
+        });
+    }
+
+    function filterCategory(cat, terms) {
+      const filtered = terms.filter(t => t.category === cat);
+      const html = `
+        <h1>${cat.toUpperCase()} 보안 용어</h1>
+        <ul>
+          ${filtered.map(t => `<li><a href="/term/${t.title}">${t.title}</a></li>`).join('')}
+        </ul>
+      `;
+      document.getElementById("content").innerHTML = html;
+    }
+
+    window.onload = function () {
+      updateRecommendedTerms();
+      updateCategoryMenu();
+    };
+  </script>
+</body>
+</html>

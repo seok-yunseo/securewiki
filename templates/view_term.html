@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ term.title }} - 보안위키</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo" onclick="location.href='/'">🔐 보안위키</div>
+  </header>
+
+  <main id="term-container" style="padding: 30px;">
+    <h1>{{ term.title }}</h1>
+    <p><strong>카테고리:</strong> {{ term.category }}</p>
+    <p><strong>설명:</strong> {{ term.content }}</p>
+    <p><strong>작성자:</strong> {{ term.author }}</p>
+    <p><strong>최근 수정자:</strong> {{ term.last_editor }}</p>
+
+    <div style="margin-top: 20px;">
+      <a class="add-button" href="/edit/{{ term.title }}">✏️ 수정</a>
+    </div>
+  </main>
+</body>
+</html>
