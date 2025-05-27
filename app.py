@@ -130,6 +130,7 @@ def api_edit_term(title):
 # ✅ 서버 실행
 import os
 
-if __name__ == '__main__' and not os.environ.get("RENDER"):
-    app.run(debug=True)
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
 
